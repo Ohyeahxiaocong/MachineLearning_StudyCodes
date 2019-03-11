@@ -31,22 +31,22 @@ Y = iris.target
 clf = tree.DecisionTreeClassifier(max_depth=4)
 clf.fit(X, Y)
 
-x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-x2_min, x2_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
 
 # 产生两个坐标值矩阵
-x1, x2 = np.meshgrid(np.arange(x1_min, x1_max, 0.1), np.arange(x2_min, x2_max, 0.1))
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),np.arange(y_min, y_max, 0.02))
 
 # ravel将矩阵扁平化为一维向量
 # c_矩阵横向拼接 行数不变
 # r_矩阵纵向拼接 列数不变
-Y_prid = clf.predict(np.c_[x1.ravel(), x2.ravel()])
-Y_prid =  Y_prid.reshape(x1.shape)
+Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
 
 # 填充等高线图 散点图
 plt.figure()
-plt.contourf(x1, x2, Y_prid, alpha=0.2)
-plt.scatter(X[:, 0], X[:, 1], c=Y, alpha=0.8)
+plt.contourf(xx, yy, Z, alpha=0.2)
+plt.scatter(X[:, 0], X[:, 1], c=Y, marker='.')
 
 # 取花萼的宽
 X = iris.data[:, [1, 3]]
@@ -54,13 +54,13 @@ Y = iris.target
 clf = tree.DecisionTreeClassifier(max_depth=4)
 clf.fit(X, Y)
 
-x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-x2_min, x2_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-x1, x2 = np.meshgrid(np.arange(x1_min, x1_max, 0.1), np.arange(x2_min, x2_max, 0.1))
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),np.arange(y_min, y_max, 0.02))
 
-Y_prid = clf.predict(np.c_[x1.ravel(), x2.ravel()])
-Y_prid =  Y_prid.reshape(x1.shape)
+Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
 
 plt.figure()
-plt.contourf(x1, x2, Y_prid, alpha=0.2)
-plt.scatter(X[:, 0], X[:, 1], c=Y, alpha=0.8)
+plt.contourf(xx, yy, Z, alpha=0.2)
+plt.scatter(X[:, 0], X[:, 1], c=Y, marker='.')
