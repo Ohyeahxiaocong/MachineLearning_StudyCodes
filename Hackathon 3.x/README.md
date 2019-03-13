@@ -39,7 +39,7 @@ We have train and test data set, train data set has both input and output variab
 **Var4** - Categorical Variable with multiple Levels  
 
 # Outcomes:
-**LoggedIn** - Application Logged (Variable for understanding the problem – cannot be used in prediction)
+**LoggedIn** - Application Logged (Variable for understanding the problem – cannot be used in prediction)  
 **Disbursed** - Loan Disbursed (Target Variable)
 
 # Evaluation Cirteria:
