@@ -1,1 +1,1 @@
-#Hackathon 3.x - Predict customer worth for Happy Customer Bank
+# Hackathon 3.x - Predict customer worth for Happy Customer Bank
