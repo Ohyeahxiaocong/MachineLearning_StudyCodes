@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Mar  3 23:29:30 2019
-
-@author: Hyomin
-"""
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
