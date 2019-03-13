@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Mar  6 22:05:01 2019
-
-@author: Hyomin
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
