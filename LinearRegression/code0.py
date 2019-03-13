@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
 #scikit-learn v0.20.3
 import pandas as pd
 from sklearn.model_selection import train_test_split
