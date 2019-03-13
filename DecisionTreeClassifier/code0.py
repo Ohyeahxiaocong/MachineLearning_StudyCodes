@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Mar  6 08:57:52 2019
-
-@author: WZX
-"""
 from sklearn.datasets import load_iris
 from sklearn import tree
 import pydotplus
