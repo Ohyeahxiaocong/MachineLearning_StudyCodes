@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Mar  7 09:40:13 2019
-
-@author: WZX
-"""
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
 
