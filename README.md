@@ -1,6 +1,3 @@
-# MachineLearning_StudyCodes
-
-
 # The version of package I used:  
    pandas 0.24.1  
    numpy 1.16.2  
