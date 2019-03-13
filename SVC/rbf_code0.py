@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Mar  7 17:26:41 2019
-
-@author: WZX
-"""
 import numpy as np
 from sklearn.datasets import make_circles
 from sklearn.svm import SVC
