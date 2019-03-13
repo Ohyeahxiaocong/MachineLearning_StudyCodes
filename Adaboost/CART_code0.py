@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 11 13:38:47 2019
-
-@author: WZX
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.ensemble import AdaBoostClassifier
