@@ -7,7 +7,7 @@ Created on Sun Mar 17 22:47:39 2019
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn import cross_validation, metrics
+from sklearn import metrics
 from sklearn.grid_search import GridSearchCV
 
 import matplotlib.pylab as plt
