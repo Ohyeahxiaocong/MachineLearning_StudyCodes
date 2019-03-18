@@ -37,7 +37,7 @@ model = keras.Sequential([keras.layers.Flatten(input_shape=(28, 28)),
 # 'sparse_categorical_crossentropy' 不需要对分类编码
 # metrics 评估方法 通常用精确率metrics=['accuracy']
 model.compile(optimizer=tf.train.AdamOptimizer(),
-              loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+              loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # keras.Sequential.fit 依据固定次数用训练集训练模型 epochs为所有数据迭代(前项+反向)次数
 model.fit(train_images, train_labels, epochs=5)
