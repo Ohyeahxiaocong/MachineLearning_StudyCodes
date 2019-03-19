@@ -6,7 +6,6 @@ Created on Mon Mar 18 20:22:36 2019
 """
 import pandas as pd
 import numpy as np
-import xgboost as xgb
 from xgboost.sklearn import XGBClassifier
 from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
@@ -98,3 +97,18 @@ xsearch4.fit(X_train, y_train)
 xsearch4.best_score_
 xsearch4.best_params_
 
+# auc:0.9040838147402178
+xgb5 = XGBClassifier(max_depth=5,
+                     learning_rate=0.1,
+                     n_estimators=140,
+                     min_child_weight=1,
+                     gamma=0,
+                     subsample=0.9,
+                     colsample_bytree=0.7,
+                     objective= 'binary:logistic',
+                     scale_pos_weight=1,
+                     n_jobs=4,
+                     seed=10)
+xgb5.fit(X_train, y_train)
+y_predprob = xgb5.predict_proba(X_train)
+metrics.roc_auc_score(y_train, y_predprob[:, 1])
