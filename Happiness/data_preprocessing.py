@@ -22,6 +22,9 @@ train0 = train0[train0 >= 30]
 train0_index = list(train0.index)
 train.drop(train0_index, axis=0, inplace=True)
 
+train['happiness'].replace(-8, np.nan, inplace=True)
+train['happiness'].fillna(method='ffill', inplace=True)
+
 test['type'] = 'test'
 train['type'] = 'train'
 dataset = pd.concat([test, train], ignore_index=True, sort=False)
@@ -30,11 +33,18 @@ dataset = pd.concat([test, train], ignore_index=True, sort=False)
 nulldata = dataset.apply(lambda x: sum(x.isnull()))
 
 # 数据预处理
+
+dataset['survey_type'].replace(2, 0, inplace=True)
+
+dataset.drop(labels='province', axis=1, inplace=True)
+
 dataset.drop(labels='city', axis=1, inplace=True)
 
 dataset.drop(labels='county', axis=1, inplace=True)
 
 dataset.drop(labels='survey_time', axis=1, inplace=True)
+
+dataset['gender'].replace(2, 0, inplace=True)
 
 dataset['age'] = dataset['birth'].apply(lambda x: 2015 - x)
 dataset.drop(labels='birth', axis=1, inplace=True)
@@ -45,7 +55,7 @@ dataset.drop(labels='nationality', axis=1, inplace=True)
 dataset['religion'].replace(-8, 1, inplace=True)
 
 dataset['religion_freq'].replace(-8, 1, inplace=True)
-dataset['religion_freq'] = dataset['religion_freq'].apply(lambda x: 1 if x in [1, 2, 3] else 2 if x in [4, 5, 6] else 3)
+#dataset['religion_freq'] = dataset['religion_freq'].apply(lambda x: 1 if x in [1, 2, 3] else 2 if x in [4, 5, 6] else 3)
 
 dataset['edu'] = dataset['edu'].apply(lambda x: 1 if x ==1 else 2 if x in [2, 3] 
 else 3 if x ==4 else 4 if x in [5, 6, 7, 8] else 5 if x in [9, 10] else 6 if x in [11, 12, 13] else 4)
@@ -184,19 +194,15 @@ dataset['equity'].fillna(method='ffill', inplace=True)
 
 dataset['class'].replace(-8, np.nan, inplace=True)
 dataset['class'].fillna(method='ffill', inplace=True)
-dataset['class'] = dataset['class'].apply(lambda x: 1 if x in [1, 2, 3] else 2 if x in [4, 5, 6, 7] else 3)
 
 dataset['class_10_before'].replace(-8, np.nan, inplace=True)
 dataset['class_10_before'].fillna(method='ffill', inplace=True)
-dataset['class_10_before'] = dataset['class_10_before'].apply(lambda x: 1 if x in [1, 2, 3] else 2 if x in [4, 5, 6, 7] else 3)
 
 dataset['class_10_after'].replace(-8, np.nan, inplace=True)
 dataset['class_10_after'].fillna(method='ffill', inplace=True)
-dataset['class_10_after'] = dataset['class_10_after'].apply(lambda x: 1 if x in [1, 2, 3] else 2 if x in [4, 5, 6, 7] else 3)
 
 dataset['class_14'].replace(-8, np.nan, inplace=True)
 dataset['class_14'].fillna(method='ffill', inplace=True)
-dataset['class_14'] = dataset['class'].apply(lambda x: 1 if x in [1, 2, 3] else 2 if x in [4, 5, 6, 7] else 3)
 
 dataset['work_exper'] = dataset['work_exper'].apply(lambda x: x if x == 1 else 2 if x in [2, 3] else 3 if x in [4, 5] else 4)
 
@@ -239,7 +245,6 @@ dataset['family_status'].fillna(method='ffill', inplace=True)
 
 dataset['house'].replace(-8, np.nan, inplace=True)
 dataset['house'].fillna(method='ffill', inplace=True)
-dataset['house'] = dataset['house'].apply(lambda x : x if x in [0, 1, 2] else 3)
 
 dataset['car'].replace(-8, np.nan, inplace=True)
 dataset['car'].fillna(method='ffill', inplace=True)
@@ -381,6 +386,7 @@ dataset.drop(labels='trust_10', axis=1, inplace=True)
 dataset.drop(labels='trust_11', axis=1, inplace=True)
 dataset.drop(labels='trust_12', axis=1, inplace=True)
 dataset.drop(labels='trust_13', axis=1, inplace=True)
+dataset['trust'].fillna(dataset['trust'].mean(), inplace=True)
 
 dataset['neighbor_familiarity'].replace(-8, np.nan, inplace=True)
 dataset['neighbor_familiarity'].fillna(method='ffill', inplace=True)
@@ -425,6 +431,35 @@ dataset.drop(labels='public_service_7', axis=1, inplace=True)
 dataset.drop(labels='public_service_8', axis=1, inplace=True)
 dataset.drop(labels='public_service_9', axis=1, inplace=True)
 
+# 处理后检查是否还有缺失
+nulldata = dataset.apply(lambda x: sum(x.isnull()))
+
 # 连续数据标准化
 std = preprocessing.StandardScaler()
-dataset['income'] = std.fit_transform(np.array(dataset['income']).reshape(-1, 1))
+std_col = ['income', 'floor_area', 'height_cm', 'weight_jin', 'family_income',
+           'age', 'media', 'leisure', 'social', 'trust', 'public_service',
+           'socialize', 'relax', 'learn', 'religion_freq', 'health', 'health_problem',
+           'depression', 'socia_outing', 'equity', 'class', 'class_10_before',
+           'class_10_after', 'class_14', 'family_status', 'house', 'car', 's_income',
+           's_work_exper', 'status_peer', 'status_3_before', 'view', 'inc_ability',
+           'neighbor_familiarity', 'insur']
+for col in std_col:
+    dataset[col] = std.fit_transform(np.array(dataset[col]).reshape(-1, 1))
+
+# one-hot
+le = preprocessing.LabelEncoder()
+oh_col = ['edu', 'edu_status', 'political', 'hukou_loc', 'work_exper', 'family_m',
+          'son', 'daughter', 'marital', 's_edu', 's_political', 'f_edu',
+          'f_political', 'm_edu', 'm_political']
+for col in oh_col:
+    dataset[col] = le.fit_transform(dataset[col])
+dataset = pd.get_dummies(dataset, columns=oh_col)
+
+# 导出数据集
+train = dataset[dataset['type'] == 'train']
+train.drop(labels='type', axis=1, inplace=True)
+train.to_csv('dataset/train_modified.csv', encoding='utf-8', index=0)
+
+test = dataset[dataset['type'] == 'test']
+test.drop(labels='type', axis=1, inplace=True)
+test.to_csv('dataset/test_modified.csv', encoding='utf-8', index=0)
