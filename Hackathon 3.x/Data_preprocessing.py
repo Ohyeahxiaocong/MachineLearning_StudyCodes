@@ -3,17 +3,16 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 train = pd.read_csv('datasets/Train.csv', engine='python')
-test = pd.read_csv('datasets/Test.csv', engine='python')
+#test = pd.read_csv('datasets/Test.csv', engine='python')
 
-test['type'] = 'test'
-train['type'] = 'train'
-dataset = pd.concat([test, train], ignore_index=True, sort=False)
+#test['type'] = 'test'
+#train['type'] = 'train'
+#dataset = pd.concat([test, train], ignore_index=True, sort=False)
+
+dataset = train
 
 # 缺失值数量统计
-dataset.apply(lambda x: sum(x.isnull()))
-
-# 删除ID
-dataset.drop(labels='ID',axis=1, inplace=True)
+nulldata = dataset.apply(lambda x: sum(x.isnull()))
 
 # 城市有724个类别，类别太多,切不清楚这写城市对结果的影响，因此删除该特征
 len(dataset['City'].drop_duplicates())
