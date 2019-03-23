@@ -7,7 +7,7 @@ Created on Tue Mar 19 11:40:51 2019
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
-import matplotlib.pyplot as plt
+from sklearn.decomposition import SparsePCA
 
 train = pd.read_csv('dataset/happiness_train_complete.csv', engine='python')
 test = pd.read_csv('dataset/happiness_test_complete.csv', engine='python')
@@ -274,41 +274,54 @@ dataset['public_service_6'].replace([-2, -3], dataset['public_service_6'].median
 dataset['public_service_7'].replace([-2, -3], dataset['public_service_7'].median(), inplace=True)
 dataset['public_service_8'].replace([-2, -3], dataset['public_service_8'].median(), inplace=True)
 dataset['public_service_9'].replace([-2, -3], dataset['public_service_9'].median(), inplace=True)
+dataset['public_service_1'] = dataset['public_service_1'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_2'] = dataset['public_service_2'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_3'] = dataset['public_service_3'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_4'] = dataset['public_service_4'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_5'] = dataset['public_service_5'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_6'] = dataset['public_service_6'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_7'] = dataset['public_service_7'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_8'] = dataset['public_service_8'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
+dataset['public_service_9'] = dataset['public_service_9'].apply(lambda x: 1 if x <21 else 2 if x < 41
+       else 3 if x < 61 else 4 if x < 81 else 5)
 
 # 处理后检查是否还有缺失
+data_desc = dataset.describe()
 nulldata = dataset.isnull().sum()
-
-# 连续数据标准化
-std = preprocessing.StandardScaler()
-std_col = [
-           ]
-for col in std_col:
-    dataset[col] = std.fit_transform(np.array(dataset[col]).reshape(-1, 1))
 
 # one-hot
 le = preprocessing.LabelEncoder()
-oh_col = ['city', 'religion_freq', 'edu', 'edu_status', 'political', 'floor_area', 
-          'health', 'health_problem', 'depression', 'hukou', 'hukou_loc', 'media_1',
-          'media_2', 'media_3', 'media_4', 'media_5', 'media_6', 'leisure_1', 'leisure_2',
-          'leisure_3', 'leisure_4', 'leisure_5', 'leisure_6', 'leisure_7', 'leisure_8',
-          'leisure_9', 'leisure_10', 'leisure_11', 'leisure_12', 'socialize', 'relax', 'learn',
-          'social_neighbor', 'social_friend', 'social_outing', 'equity', 'class',
-          'class_10_before', 'class_10_after', 'class_14', 'work_exper', 'family_income',
-          'family_m', 'family_status', 'house', 'son', 'daughter', 'marital', 'f_edu',
-          'f_political', 'f_work_14', 'm_edu', 'm_political', 'm_work_14', 'status_peer',
-          'status_3_before', 'view', 'inc_ability', 'trust_1', 'trust_2', 'trust_3',
-          'trust_4', 'trust_5', 'trust_6', 'trust_7', 'trust_8', 'trust_9', 'trust_10',
-          'trust_11', 'trust_12', 'trust_13', 'neighbor_familiarity', 'age', 'income_class',
-          'body_type']
+oh_col = ['city', 'edu', 'edu_status', 'political','hukou', 'hukou_loc','work_exper', 'marital',
+          'f_edu', 'f_political', 'f_work_14', 'm_edu', 'm_political', 'm_work_14', 'survey_type',
+          'gender', 'religion', 'property_0', 'property_1', 'property_2','property_3', 'property_4',
+          'property_5', 'property_6', 'property_7', 'property_8', 'property_other', 'insur_1',
+          'insur_2', 'insur_3', 'insur_4', 'invest_1', 'invest_2', 'invest_3', 'invest_4',
+          'invest_5', 'invest_6', 'invest_7', 'invest_8', 'invest_other', 'inc_exp',]
+dataset1 = dataset[oh_col]
 for col in oh_col:
-    dataset[col] = le.fit_transform(dataset[col])
-dataset = pd.get_dummies(dataset, columns=oh_col)
+    dataset1[col] = le.fit_transform(dataset1[col])
+dataset1 = pd.get_dummies(dataset1, columns=oh_col)
+
+# 降维
+pca = SparsePCA(n_components=20, n_jobs=4, random_state=10)
+dataset2 = pca.fit_transform(dataset1)
+
+colums = [x for x in dataset.columns if x not in oh_col]
+dataset3 = dataset[colums]
+dataset = pd.concat([dataset3, pd.DataFrame(dataset2)], axis=1, sort=False)
 
 # 导出数据集
 train = dataset[dataset['type'] == 'train']
 train.drop(labels='type', axis=1, inplace=True)
 train.to_csv('dataset/train_modified.csv', encoding='utf-8', index=0)
-
 test = dataset[dataset['type'] == 'test']
 test.drop(labels='type', axis=1, inplace=True)
 test.to_csv('dataset/test_modified.csv', encoding='utf-8', index=0)
