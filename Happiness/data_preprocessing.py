@@ -310,15 +310,15 @@ for col in oh_col:
     dataset1[col] = le.fit_transform(dataset1[col])
 dataset1 = pd.get_dummies(dataset1, columns=oh_col)
 
-# 降维
-pca = SparsePCA(n_components=20, n_jobs=4, random_state=10)
-dataset2 = pca.fit_transform(dataset1)
-
+## 降维
+#pca = SparsePCA(n_components=20, n_jobs=4, random_state=10)
+#dataset2 = pca.fit_transform(dataset1)
+#
 colums = [x for x in dataset.columns if x not in oh_col]
 dataset3 = dataset[colums]
-dataset = pd.concat([dataset3, pd.DataFrame(dataset2)], axis=1, sort=False)
-
-# 导出数据集
+dataset = pd.concat([dataset3, pd.DataFrame(dataset1)], axis=1, sort=False)
+#
+## 导出数据集
 train = dataset[dataset['type'] == 'train']
 train.drop(labels='type', axis=1, inplace=True)
 train.to_csv('dataset/train_modified.csv', encoding='utf-8', index=0)
